@@ -9,14 +9,14 @@ import path from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-dotenv.config({ path: path.resolve(__dirname, "../.env.local") });
+dotenv.config();
 
 const app = express();
 
-// Enable CORS for your React app
+// Enable CORS for all origins in production, or specific origin in development
 app.use(
   cors({
-    origin: process.env.ORIGIN, // Your Vite dev server port
+    origin: process.env.ORIGIN || "*", // Allow all origins in production if ORIGIN not set
   })
 );
 
@@ -68,7 +68,5 @@ app.get("/api/places/photo", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Proxy server running on port ${PORT}`);
-});
+// Export the Express API
+export default app;
