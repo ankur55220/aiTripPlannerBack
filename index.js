@@ -9,22 +9,18 @@ import path from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, "../.env.local") });
 
 const app = express();
 
-// Enable CORS for all origins in production, or specific origin in development
+// Enable CORS for your React app
 app.use(
   cors({
-    origin: process.env.ORIGIN || "*", // Allow all origins in production if ORIGIN not set
+    origin: "http://localhost:5173", // Your Vite dev server port
   })
 );
 
 app.use(express.json());
-
-app.get("/", (req, res) => {
-  res.send("Hello from proxy server!");
-});
 
 // Proxy endpoint for Places API text search
 app.get("/api/places/textsearch", async (req, res) => {
@@ -68,5 +64,7 @@ app.get("/api/places/photo", async (req, res) => {
   }
 });
 
-// Export the Express API
-export default app;
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Proxy server running on port ${PORT}`);
+});
